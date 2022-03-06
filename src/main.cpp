@@ -12,13 +12,16 @@
 
 bool partial_redraw = false;
 uint8_t board[24][5] = {
-    //x,y,rank (1=general,2=lieutenant,3=commander,4=normal),color (black=false,red=true),is king
-    {0,0,1,false,false},{2,0,1,false,false},{4,0,1,false,false},{0,6,1,false,false}
+    //x,y,rank (1=general,2=lieutenant,3=commander,4=normal),color (black=0,red=1),is king
+    {0,0,4,0,0},{2,0,4,0,0},{4,0,4,0,0},{6,0,4,0,0},
+    {1,1,4,0,0},{3,1,4,0,0},{5,1,4,0,0},{7,1,4,0,0},
+    {0,2,4,0,0},{2,2,4,0,0},{4,2,4,0,0},{6,2,4,0,0},
+    {0,5,4,1,0},{2,5,4,1,0},{4,5,4,1,0},{6,5,4,1,0},
+    {1,6,4,1,0},{3,6,4,1,0},{5,6,4,1,0},{7,6,4,1,0},
+    {0,7,4,1,0},{2,7,4,1,0},{4,7,4,1,0},{6,7,4,1,0},
 };
-
-void dprint( char* text ){
-    dbg_sprintf(text, dbgout);
-}
+int xOffset = 160-64;
+int yOffset = 120-64;
 
 void begin(){
     //TODO
@@ -34,8 +37,10 @@ bool step(){
 
 //handle graphics
 void draw(){
+    gfx_FillScreen(255);
+    dbg_sprintf(dbgout,"in draw");
     //go through every piece in board
-    for( int i=0; i++; i < sizeof(board) ){
+    for( int i=0; i < sizeof(board) / 5; i++ ){
         //determine what color to use for a piece
         if ( board[i][3] ) {
             gfx_SetColor(224);
@@ -43,27 +48,27 @@ void draw(){
             gfx_SetColor(0);
         }
         //piece
-        gfx_Rectangle(board[i][0]*8,board[i][1]*8,8,8);
+        gfx_FillCircle(board[i][0]*16+xOffset,board[i][1]*16+yOffset,8);
     }
 }
 
 
 int main( void ) {
-    dprint("start");
+    dbg_sprintf(dbgout,"began main");
     gfx_SetColor(0);
     gfx_Begin();
     gfx_SetDrawBuffer();
+    gfx_FillScreen(255);
 
     while (step()) {
-        dprint("in loop");
+        dbg_sprintf(dbgout,"in loop");
         if (partial_redraw){
             gfx_BlitScreen();
         }
         draw(); 
-        dprint("draw");
+        
+        dbg_sprintf(dbgout,"swap draw");
         gfx_SwapDraw(); 
     }
-
-    dprint("program end");
     return 0;
 }
