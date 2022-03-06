@@ -11,44 +11,46 @@
 #include <debug.h>
 
 bool partial_redraw = false;
-uint8_t board[24][4] = {
-    {0,0,1,false},{2,0,1,false},{4,0,1,false},{0,6,1,false}
+uint8_t board[24][5] = {
+    //x,y,rank (1=general,2=lieutenant,3=commander,4=normal),color (black=false,red=true),is king
+    {0,0,1,false,false},{2,0,1,false,false},{4,0,1,false,false},{0,6,1,false,false}
 };
 
 void dprint( char* text ){
     dbg_sprintf(text, dbgout);
 }
+
 void begin(){
     //TODO
 }
+
 void end(){
     //TODO
 }
+
 bool step(){
     return true;
 }
+
+//handle graphics
 void draw(){
+    //go through every piece in board
     for( int i=0; i++; i < sizeof(board) ){
-        switch ( board[i][3] ){
-            case 1:
-                dprint("inside test case");
-                gfx_SetColor(0);
-                break;
-            
-            case 3:
-                gfx_SetColor(224);
-                break;
-            
-            default:
-                break;
+        //determine what color to use for a piece
+        if ( board[i][3] ) {
+            gfx_SetColor(224);
+        } else {
+            gfx_SetColor(0);
         }
-        gfx_Rectangle(board[i][0],board[i][1],8,8);
+        //piece
+        gfx_Rectangle(board[i][0]*8,board[i][1]*8,8,8);
     }
 }
 
 
 int main( void ) {
     dprint("start");
+    gfx_SetColor(0);
     gfx_Begin();
     gfx_SetDrawBuffer();
 
