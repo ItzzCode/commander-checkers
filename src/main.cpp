@@ -91,8 +91,11 @@ void draw(){
         gfx_FillCircle(board[i][0]*16+xOffset+8,board[i][1]*16+yOffset+8,8);
     }
 
-    //just say what select is (and doesn't work lol)
-    gfx_PrintStringXY("Selected:"+((char)select[0])+' '+((char)select[1]),0,0);
+    //just say what select is
+    gfx_PrintStringXY("Selected:",0,0);
+    gfx_PrintUInt(select[0], 1);
+    gfx_PrintString(" ");
+    gfx_PrintUInt(select[1], 1);
 }
 
 
