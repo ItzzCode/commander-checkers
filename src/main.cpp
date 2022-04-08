@@ -15,9 +15,9 @@
 bool partial_redraw = false;
 uint8_t board[24][5] = {
     //x,y,rank (1=general,2=lieutenant,3=commander,4=normal),color (black=0,red=1),is king
-    {0,0,4,0,0},{2,0,4,0,0},{4,0,4,0,0},{6,0,4,0,0},
-    {1,1,4,0,0},{3,1,4,0,0},{5,1,4,0,0},{7,1,4,0,0},
-    {0,2,4,0,0},{2,2,4,0,0},{4,2,4,0,0},{6,2,4,0,0},
+    {1,0,4,0,0},{3,0,4,0,0},{5,0,4,0,0},{7,0,4,0,0},
+    {0,1,4,0,0},{2,1,4,0,0},{4,1,4,0,0},{6,1,4,0,0},
+    {1,2,4,0,0},{3,2,4,0,0},{5,2,4,0,0},{7,2,4,0,0},
     {0,5,4,1,0},{2,5,4,1,0},{4,5,4,1,0},{6,5,4,1,0},
     {1,6,4,1,0},{3,6,4,1,0},{5,6,4,1,0},{7,6,4,1,0},
     {0,7,4,1,0},{2,7,4,1,0},{4,7,4,1,0},{6,7,4,1,0},
@@ -47,13 +47,13 @@ bool step(){
         if( kb_IsDown(kb_Key2nd) ){
 
         } else if( kb_IsDown(kb_KeyLeft) ){
-            select[0]++;
-        } else if( kb_IsDown(kb_KeyRight) ){
             select[0]--;
+        } else if( kb_IsDown(kb_KeyRight) ){
+            select[0]++;
         } else if( kb_IsDown(kb_KeyUp) ){
-            select[1]++;
-        } else if( kb_IsDown(kb_KeyDown) ){
             select[1]--;
+        } else if( kb_IsDown(kb_KeyDown) ){
+            select[1]++;
         }
     
         return true;
@@ -69,9 +69,9 @@ void draw(){
     for( int i = 0; i < 8; i++ ){
         for( int e = 0; e < 8; e++ ){
             if ( (i+e)%2 == 0){
-                gfx_SetColor(128);
-            } else {
                 gfx_SetColor(127);
+            } else {
+                gfx_SetColor(128);
             }
             gfx_FillRectangle(xOffset+i*16, yOffset+e*16, 18, 18);
         }
@@ -96,6 +96,12 @@ void draw(){
     gfx_PrintUInt(select[0], 1);
     gfx_PrintString(" ");
     gfx_PrintUInt(select[1], 1);
+
+    //show selected checker
+    gfx_SetColor(196);
+    gfx_Rectangle(xOffset+select[0]*16, yOffset+select[1]*16, 16, 16);
+    //this seems quite odd and i think there's a better way to do this
+    gfx_Rectangle(xOffset+select[0]*16-1, yOffset+select[1]*16-1, 18, 18); 
 }
 
 
