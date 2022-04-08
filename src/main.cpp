@@ -24,6 +24,7 @@ uint8_t board[24][5] = {
 };
 int xOffset = 160-64;
 int yOffset = 120-64;
+uint8_t select[2] = {0,0}; //x,y
 
 void begin(){
     //TODO
@@ -33,10 +34,32 @@ void end(){
     //TODO
 }
 
-//handle idk yet
+//handle logic
 bool step(){
+    dbg_sprintf(dbgout, "inside of step()\n");
+
+    //find and handle the input from keypad
     kb_Scan();
-    return !kb_IsDown(kb_KeyClear);
+    if( !kb_IsDown(kb_KeyClear) ){
+        dbg_sprintf(dbgout, "user did not exit\n");
+
+        //input handling :>
+        if( kb_IsDown(kb_Key2nd) ){
+
+        } else if( kb_IsDown(kb_KeyLeft) ){
+            select[0]++;
+        } else if( kb_IsDown(kb_KeyRight) ){
+            select[0]--;
+        } else if( kb_IsDown(kb_KeyUp) ){
+            select[1]++;
+        } else if( kb_IsDown(kb_KeyDown) ){
+            select[1]--;
+        }
+    
+        return true;
+    } else {
+        return false;
+    }
 }
 
 //handle graphics
@@ -67,6 +90,9 @@ void draw(){
         //piece
         gfx_FillCircle(board[i][0]*16+xOffset+8,board[i][1]*16+yOffset+8,8);
     }
+
+    //just say what select is (and doesn't work lol)
+    gfx_PrintStringXY("Selected:"+((char)select[0])+' '+((char)select[1]),0,0);
 }
 
 
