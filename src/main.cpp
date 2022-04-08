@@ -8,6 +8,7 @@
 */
 
 #include <graphx.h>
+#include <keypadc.h>
 #include <tice.h>
 #include <debug.h>
 
@@ -34,11 +35,8 @@ void end(){
 
 //handle idk yet
 bool step(){
-    if ( os_GetKey() == 45 ){
-        return false;
-    } else {
-        return true;
-    }
+    kb_Scan();
+    return !kb_IsDown(kb_KeyClear);
 }
 
 //handle graphics
@@ -89,5 +87,7 @@ int main( void ) {
         dbg_sprintf(dbgout,"swap draw\n");
         gfx_SwapDraw(); 
     }
+
+    gfx_End();
     return 0;
 }
