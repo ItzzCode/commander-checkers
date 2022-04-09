@@ -46,6 +46,42 @@ void end(){
 }
 
 /**
+ * @brief handles inputs
+ * 
+ * @warning is bracket hell.
+ */
+void inputHandling(){
+	//input handling (and bracket hell) :>
+	if( kb_IsDown(kb_Key2nd) ){
+		if( !hasSelected ){
+			selectedChecker = select;
+			hasSelected = true;
+		} else {
+			board[select][0] = moveSelect[0];
+			board[select][1] = moveSelect[1];
+			hasSelected = false;
+		}
+	} else if( kb_IsDown(kb_KeyAlpha) ){
+		hasSelected = false;
+	} else if( hasSelected ){
+		if( kb_IsDown(kb_KeyLeft) ){
+			moveSelect[0]--;
+		} else if( kb_IsDown(kb_KeyRight) ){
+			moveSelect[0]++;
+		} else if( kb_IsDown(kb_KeyUp) ){
+			moveSelect[1]--;
+		} else if( kb_IsDown(kb_KeyDown) ){
+			moveSelect[1]++;
+		}
+	} else if( kb_IsDown(kb_KeyLeft) ){
+		select--;
+	} else if( kb_IsDown(kb_KeyRight) ){
+		select++;
+	}
+	delay(100);
+}
+
+/**
  * @brief handle logic
  * 
  * @return true 
@@ -58,35 +94,7 @@ bool step(){
     kb_Scan();
     if( !kb_IsDown(kb_KeyClear) ){
         dbg_sprintf(dbgout, "user did not exit\n");
-
-        //input handling (and bracket hell) :>
-        if( kb_IsDown(kb_Key2nd) ){
-            if( !hasSelected ){
-                selectedChecker = select;
-                hasSelected = true;
-            } else {
-                board[select][0] = moveSelect[0];
-                board[select][1] = moveSelect[1];
-                hasSelected = false;
-            }
-        } else if( kb_IsDown(kb_KeyAlpha) ){
-            hasSelected = false;
-        }else if( hasSelected ){
-            if( kb_IsDown(kb_KeyLeft) ){
-                moveSelect[0]--;
-            } else if( kb_IsDown(kb_KeyRight) ){
-                moveSelect[0]++;
-            } else if( kb_IsDown(kb_KeyUp) ){
-                moveSelect[1]--;
-            } else if( kb_IsDown(kb_KeyDown) ){
-                moveSelect[1]++;
-            }
-        } else if( kb_IsDown(kb_KeyLeft) ){
-            select--;
-        } else if( kb_IsDown(kb_KeyRight) ){
-            select++;
-        }
-        delay(60);
+        inputHandling();
         return true;
     } else {
         return false;
