@@ -25,7 +25,7 @@ uint8_t board[24][5] = {
 int xOffset = 160-64;
 int yOffset = 120-64;
 uint8_t select;
-uint8_t selectedChecker;
+uint8_t selectedChecker = 25;
 uint8_t moveSelect[2];
 bool hasSelected = false;
 
@@ -56,28 +56,39 @@ void inputHandling(){
 		if( !hasSelected ){
 			selectedChecker = select;
 			hasSelected = true;
-		} else {
-			board[select][0] = moveSelect[0];
-			board[select][1] = moveSelect[1];
-			hasSelected = false;
+		} else if( (moveSelect[0]+moveSelect[1])%2 != 0 ){
+            bool inOtherChecker = false;
+			for( int i=0; i<24; i++ ){
+                if( (board[i][0] == board[select][0]) && (board[i][1] == board[select][1]) ){
+                    inOtherChecker = true;
+                }
+                if (!inOtherChecker){
+                    board[select][0] = moveSelect[0];
+			        board[select][1] = moveSelect[1];
+                    selectedChecker = 25;
+			        hasSelected = false;
+                }
+            }
 		}
 	} else if( kb_IsDown(kb_KeyAlpha) ){
 		hasSelected = false;
+        selectedChecker = 25;
 	} else if( hasSelected ){
-		if( kb_IsDown(kb_KeyLeft) ){
-			moveSelect[0]--;
-		} else if( kb_IsDown(kb_KeyRight) ){
+		if( kb_IsDown(kb_KeyLeft) && (moveSelect[0]-1 >= 0) ){
+            moveSelect[0]--;
+		} else if( kb_IsDown(kb_KeyRight) && (moveSelect[0]+1 <= 7) ){
 			moveSelect[0]++;
-		} else if( kb_IsDown(kb_KeyUp) ){
+		} else if( kb_IsDown(kb_KeyUp) && (moveSelect[1]-1 >= 0) ){
 			moveSelect[1]--;
-		} else if( kb_IsDown(kb_KeyDown) ){
+		} else if( kb_IsDown(kb_KeyDown) && (moveSelect[1]+1 <= 7) ){
 			moveSelect[1]++;
 		}
-	} else if( kb_IsDown(kb_KeyLeft) ){
+	} else if( kb_IsDown(kb_KeyLeft) && (select-1 >= 0) ){
 		select--;
-	} else if( kb_IsDown(kb_KeyRight) ){
+	} else if( kb_IsDown(kb_KeyRight) && (select+1 <= 23) ){
 		select++;
 	}
+    dbg_sprintf(dbgout, "%i-1 = %i\n", moveSelect[0], moveSelect[0]-1);
 	delay(100);
 }
 
@@ -133,9 +144,7 @@ void draw(){
         gfx_FillCircle(board[i][0]*16+xOffset+8,board[i][1]*16+yOffset+8,8);
     }
 
-    //just say what select is
-    gfx_PrintStringXY("Selected:",0,0);
-    gfx_PrintUInt(select, 1);
+    dbg_sprintf(dbgout, "%i, %i, %i\n", moveSelect[0], moveSelect[1], select);
 
     //show select box
     if ( hasSelected ){
